@@ -85,15 +85,10 @@ client.on('ready', async () => {
 
 async function reconnect() {
   try {
-    console.log('Đang disconnect...');
-    await client.destroy(); 
-    console.log('Đã disconnect thành công');
-    await new Promise(resolve => setTimeout(resolve, 15 * 1000));
-    console.log('Đang kết nối lại...');
-    await client.login(process.env.DISCORD_TOKEN);
-    console.log('Đã kết nối lại thành công');
+    console.log('Đang dừng chương trình...');
+    process.exit();
   } catch (error) {
-    console.error('Lỗi khi reconnect:', error);
+    console.error('Lỗi khi dừng chương trình:', error);
   }
 }
 
