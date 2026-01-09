@@ -1,8 +1,5 @@
 const { fork } = require("child_process");
 
-// Fork index.js chạy suốt
-fork("./index.js");
-
 let accProcess = null;
 
 // Hàm bật acc.js

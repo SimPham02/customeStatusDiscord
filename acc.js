@@ -1,4 +1,5 @@
 const Discord = require('discord.js-selfbot-v13');
+const { CustomStatus } = require('discord.js-selfbot-v13');
 require('dotenv').config();
 
 function formatTime() {
@@ -79,12 +80,35 @@ async function startDiscordClient() {
 
     client.user.setPresence({ status: "dnd" });
 
+    const rawTexts = process.env.CUSTOM_STATUS_TEXTS || process.env.CUSTOM_STATUS_TEXT || "Gần đây bạn đang đọc gì?";
+    const statusTexts = String(rawTexts).split('|').map(s => s.trim()).filter(Boolean);
+    const rawEmojis = process.env.CUSTOM_STATUS_EMOJIS || process.env.CUSTOM_STATUS_EMOJI || "😊";
+    const statusEmojis = String(rawEmojis).split('|').map(s => s.trim()).filter(Boolean);
+    let statusIndex = 0;
+
+    const custom = new CustomStatus(client)
+      .setState(statusTexts[statusIndex])
+      .setEmoji(statusEmojis[statusIndex % statusEmojis.length]);
+
+    client.user.setPresence({ status: "dnd", activities: [custom, r] });
+    console.log("Started custom status rotation:", statusTexts);
+    const rotateSeconds = Math.max(1, parseInt(process.env.CUSTOM_STATUS_INTERVAL, 10) || 5);
+    const rotateMs = rotateSeconds * 1000;
+    console.log(`Custom status rotate interval: ${rotateSeconds}s`);
+    setInterval(() => {
+      statusIndex = (statusIndex + 1) % statusTexts.length;
+      custom.setState(statusTexts[statusIndex]);
+      custom.setEmoji(statusEmojis[statusIndex % statusEmojis.length]);
+      client.user.setPresence({ status: "dnd", activities: [custom, r] });
+      console.log("Custom status updated to:", statusTexts[statusIndex]);
+    }, rotateMs);
+
     let prevTime = null;
     setInterval(() => {
       const newTime = formatTime();
       if (newTime !== prevTime) {
         r.setDetails(`sleep [${newTime}]`);
-        client.user.setActivity(r);
+        client.user.setPresence({ status: "dnd", activities: [custom, r] });
         prevTime = newTime;
       }
     }, 1000);
