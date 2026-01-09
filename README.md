@@ -1,6 +1,5 @@
 # Custom Status Discord
 
-![Giao diện menu](images/discord-menu.png)
 
 ## Mô tả
 
@@ -27,7 +26,12 @@
 
 3. Tạo file `.env` giống file .env.1
 
+- token bạn tự lấy
+- SMALL_IMAGE_URL= thì copy ở đây
+
 ![Giao diện menu](images/copylink.png)
+
+- APPLICATION_ID thì bạn vô discord.dev tạo một bot của bạn sau đó copy id của nó
 
 
 ## Chạy
