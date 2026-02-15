@@ -70,7 +70,6 @@ async function startDiscordClient() {
         }
 
         client.user.setActivity(r);
-        console.log("Đã cập nhật Rich Presence img.");
       } catch (error) {
         console.error("Lỗi khi lấy ảnh:", error);
       }
@@ -91,16 +90,13 @@ async function startDiscordClient() {
       .setEmoji(statusEmojis[statusIndex % statusEmojis.length]);
 
     client.user.setPresence({ status: "dnd", activities: [custom, r] });
-    console.log("Started custom status rotation:", statusTexts);
     const rotateSeconds = Math.max(1, parseInt(process.env.CUSTOM_STATUS_INTERVAL, 10) || 5);
     const rotateMs = rotateSeconds * 1000;
-    console.log(`Custom status rotate interval: ${rotateSeconds}s`);
     setInterval(() => {
       statusIndex = (statusIndex + 1) % statusTexts.length;
       custom.setState(statusTexts[statusIndex]);
       custom.setEmoji(statusEmojis[statusIndex % statusEmojis.length]);
       client.user.setPresence({ status: "dnd", activities: [custom, r] });
-      console.log("Custom status updated to:", statusTexts[statusIndex]);
     }, rotateMs);
 
     let prevTime = null;
